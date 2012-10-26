@@ -71,10 +71,18 @@
 
     /**
      * @return bool|string
+     * @throws \Exception
      */
     protected function _getClientId()
     {
-      return $this->_getVarByKey('_clientId');
+      $clientId = $this->_getVarByKey('_clientId');
+
+      if(empty($clientId))
+      {
+        throw new \Exception(__CLASS__ . ': Missing Soundcloud API-Key (clientId)', 500);
+      }
+
+      return $clientId;
     }
 
     // ##########################################
