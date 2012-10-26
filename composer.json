@@ -1,6 +1,6 @@
 {
     "name":"fightbulc/cirrus",
-    "description":"Soundcloud API Library to fetch data for users, tracks and playlists",
+    "description":"Soundcloud API Reader Library to fetch data for users, tracks and playlists",
     "version":"1.0.0",
     "type":"library",
     "keywords":["soundcloud", "api", "tracks", "users", "playlists"],
