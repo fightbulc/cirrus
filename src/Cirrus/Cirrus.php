@@ -14,7 +14,7 @@
     protected $_clientIdUrlPattern = '?client_id={{clientId}}';
 
     /** @var array */
-    protected $_imageSizes = array(
+    protected static $_imageSizes = array(
       'original' => 'original',
       '500'      => 't500x500',
       '400'      => 'crop',
@@ -142,8 +142,13 @@
      * @param $size
      * @return mixed
      */
-    public function getImageUrlBySize($imageUrl, $size)
+    public static function getImageUrlBySize($imageUrl, $size)
     {
-      return str_replace('large', $size, $imageUrl);
+      if(! isset(Cirrus::$_imageSizes[$size]))
+      {
+        return $imageUrl;
+      }
+
+      return str_replace('large', Cirrus::$_imageSizes[$size], $imageUrl);
     }
   }
