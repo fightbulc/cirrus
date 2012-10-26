@@ -343,6 +343,61 @@ Fetchable Relationships:
 Fetchable Relationships:
 - Complete user data
 
+# Adjust Artwork & Avatar image sizes
+Soundcloud offers a couple of image sizes for track artwork- and user's avatar-images.
+
+```php
+array(
+  'original' => 'original',
+  '500'      => 't500x500',
+  '400'      => 'crop',
+  '300'      => 't300x300',
+  '100'      => 'large',
+  '67'       => 't67x67',
+  '47'       => 'badge',
+  '32'       => 'small',
+  '20'       => 'tiny_artworks', // only artworks
+  '18'       => 'tiny_avatars',  // only avatars
+  '16'       => 'mini',
+);
+```
+
+Soundcloud's default size is ```large```.
+
+To choose from one of the above listed sizes you can make use of ```\Cirrus\Cirrus::getImageUrlBySize($imageUrl, $size)```.
+
+### User avatar
+```php
+require __DIR__ . '/../vendor/autoload.php';
+
+$clientId = '[YOUR API KEY]';
+$userId = 428623;
+
+$userVo = \Cirrus\Users\UsersCirrus::init()
+  ->setClientId($clientId)
+  ->setId($userId)
+  ->fetchData();
+
+// set image size to 400x400
+\Cirrus\Cirrus::getImageUrlBySize($userVo->getUrlAvatar(), 400); // http://i1.sndcdn.com/avatars-000000788968-kgr595-crop.jpg?e2f8ae2
+```
+
+### Track artwork
+```php
+require __DIR__ . '/../vendor/autoload.php';
+
+$clientId = '[YOUR API KEY]';
+$trackId = 64321366;
+
+$trackVo = \Cirrus\Tracks\TracksCirrus::init()
+  ->setClientId($clientId)
+  ->setId($trackId)
+  ->fetchData();
+
+// set image size to original size
+\Cirrus\Cirrus::getImageUrlBySize($trackVo->getUrlAvatar(), 'original'); // http://i1.sndcdn.com/artworks-000032638740-ttuwkl-original.jpg?e2f8ae2
+```
+
 # Anything else?
 
 Still in doubt how to use this library? Have a look at the ```test``` folder. I included there examples for all fetchable data.
