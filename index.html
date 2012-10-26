@@ -374,7 +374,62 @@ If you want to fetch all user details just fetch them as the following example s
 
 <ul>
 <li>Complete user data</li>
-</ul><h1>Anything else?</h1>
+</ul><h1>Adjust Artwork &amp; Avatar image sizes</h1>
+
+<p>Soundcloud offers a couple of image sizes for track artwork- and user's avatar-images.</p>
+
+<div class="highlight"><pre><span class="k">array</span><span class="p">(</span>
+  <span class="s1">'original'</span> <span class="o">=&gt;</span> <span class="s1">'original'</span><span class="p">,</span>
+  <span class="s1">'500'</span>      <span class="o">=&gt;</span> <span class="s1">'t500x500'</span><span class="p">,</span>
+  <span class="s1">'400'</span>      <span class="o">=&gt;</span> <span class="s1">'crop'</span><span class="p">,</span>
+  <span class="s1">'300'</span>      <span class="o">=&gt;</span> <span class="s1">'t300x300'</span><span class="p">,</span>
+  <span class="s1">'100'</span>      <span class="o">=&gt;</span> <span class="s1">'large'</span><span class="p">,</span>
+  <span class="s1">'67'</span>       <span class="o">=&gt;</span> <span class="s1">'t67x67'</span><span class="p">,</span>
+  <span class="s1">'47'</span>       <span class="o">=&gt;</span> <span class="s1">'badge'</span><span class="p">,</span>
+  <span class="s1">'32'</span>       <span class="o">=&gt;</span> <span class="s1">'small'</span><span class="p">,</span>
+  <span class="s1">'20'</span>       <span class="o">=&gt;</span> <span class="s1">'tiny_artworks'</span><span class="p">,</span> <span class="c1">// only artworks</span>
+  <span class="s1">'18'</span>       <span class="o">=&gt;</span> <span class="s1">'tiny_avatars'</span><span class="p">,</span>  <span class="c1">// only avatars</span>
+  <span class="s1">'16'</span>       <span class="o">=&gt;</span> <span class="s1">'mini'</span><span class="p">,</span>
+<span class="p">);</span>
+</pre></div>
+
+<p>Soundcloud's default size is <code>large</code>.</p>
+
+<p>To choose from one of the above listed sizes you can make use of <code>\Cirrus\Cirrus::getImageUrlBySize($imageUrl, $size)</code>.</p>
+
+<h3>User avatar</h3>
+
+<div class="highlight"><pre><span class="k">require</span> <span class="nx">__DIR__</span> <span class="o">.</span> <span class="s1">'/../vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$clientId</span> <span class="o">=</span> <span class="s1">'[YOUR API KEY]'</span><span class="p">;</span>
+<span class="nv">$userId</span> <span class="o">=</span> <span class="mi">428623</span><span class="p">;</span>
+
+<span class="nv">$userVo</span> <span class="o">=</span> <span class="nx">\Cirrus\Users\UsersCirrus</span><span class="o">::</span><span class="na">init</span><span class="p">()</span>
+  <span class="o">-&gt;</span><span class="na">setClientId</span><span class="p">(</span><span class="nv">$clientId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">setId</span><span class="p">(</span><span class="nv">$userId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">fetchData</span><span class="p">();</span>
+
+<span class="c1">// set image size to 400x400</span>
+<span class="nx">\Cirrus\Cirrus</span><span class="o">::</span><span class="na">getImageUrlBySize</span><span class="p">(</span><span class="nv">$userVo</span><span class="o">-&gt;</span><span class="na">getUrlAvatar</span><span class="p">(),</span> <span class="mi">400</span><span class="p">);</span> <span class="c1">// http://i1.sndcdn.com/avatars-000000788968-kgr595-crop.jpg?e2f8ae2</span>
+</pre></div>
+
+<h3>Track artwork</h3>
+
+<div class="highlight"><pre><span class="k">require</span> <span class="nx">__DIR__</span> <span class="o">.</span> <span class="s1">'/../vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$clientId</span> <span class="o">=</span> <span class="s1">'[YOUR API KEY]'</span><span class="p">;</span>
+<span class="nv">$trackId</span> <span class="o">=</span> <span class="mi">64321366</span><span class="p">;</span>
+
+<span class="nv">$trackVo</span> <span class="o">=</span> <span class="nx">\Cirrus\Tracks\TracksCirrus</span><span class="o">::</span><span class="na">init</span><span class="p">()</span>
+  <span class="o">-&gt;</span><span class="na">setClientId</span><span class="p">(</span><span class="nv">$clientId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">setId</span><span class="p">(</span><span class="nv">$trackId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">fetchData</span><span class="p">();</span>
+
+<span class="c1">// set image size to original size</span>
+<span class="nx">\Cirrus\Cirrus</span><span class="o">::</span><span class="na">getImageUrlBySize</span><span class="p">(</span><span class="nv">$trackVo</span><span class="o">-&gt;</span><span class="na">getUrlAvatar</span><span class="p">(),</span> <span class="s1">'original'</span><span class="p">);</span> <span class="c1">// http://i1.sndcdn.com/artworks-000032638740-ttuwkl-original.jpg?e2f8ae2</span>
+</pre></div>
+
+<h1>Anything else?</h1>
 
 <p>Still in doubt how to use this library? Have a look at the <code>test</code> folder. I included there examples for all fetchable data.</p>
 
