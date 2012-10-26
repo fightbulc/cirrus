@@ -1,0 +1,400 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Cirrus by fightbulc</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/fightbulc/cirrus">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/fightbulc/cirrus/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/fightbulc/cirrus/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Cirrus</h1>
+          <p>Soundcloud API Reader Library to fetch data for users, tracks and playlists.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/fightbulc">fightbulc</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>Cirrus</h1>
+
+<h3>What is Cirrus?</h3>
+
+<p>Soundcloud API Library to fetch and process data about users, tracks and playlists.</p>
+
+<h3>Any dependencies?</h3>
+
+<p>Cirrus comes as an <a href="http://getcomposer.org/">composer</a> package.<br>
+Requirements are &gt;= PHP 5.3, its CURL extension and a <a href="https://github.com/fightbulc/php_curl">CURL handler class</a>.  </p>
+
+<p>Further, you need an API key from Soundcloud. <a href="http://soundcloud.com/you/apps">Register here</a>.</p>
+
+<h3>Setup</h3>
+
+<ul>
+<li>Download</li>
+<li>Run <code>composer install</code>
+</li>
+<li>Start hacking</li>
+</ul><h1>Structure</h1>
+
+<p>All fetched results are wrapped in <em>value object</em> classes.
+This means that you can access all response values by method call.  </p>
+
+<div class="highlight"><pre><span class="c1">// print the username</span>
+<span class="k">echo</span> <span class="nv">$userVo</span><span class="o">-&gt;</span><span class="na">getUsername</span><span class="p">();</span>
+
+<span class="c1">// or lets get all tracks from the user</span>
+<span class="c1">// and then the title from the first track</span>
+<span class="nv">$tracksVo</span> <span class="o">=</span> <span class="nv">$userVo</span><span class="o">-&gt;</span><span class="na">getTracksVo</span><span class="p">();</span>
+<span class="k">echo</span> <span class="nv">$tracksVo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-&gt;</span><span class="na">getTitle</span><span class="p">();</span>
+</pre></div>
+
+<p>In general VOs enable us to maintain our code much better.<br>
+Especially if we dont have any influence on our reference as its the case with soundcloud's API.</p>
+
+<p>More info? <a href="http://jmatter.org/articles/2006/08/04/tip-of-the-week-value-objects">Read on</a>.</p>
+
+<h1>Example: User</h1>
+
+<h3>1. Get user data</h3>
+
+<div class="highlight"><pre><span class="k">require</span> <span class="nx">__DIR__</span> <span class="o">.</span> <span class="s1">'/../vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$clientId</span> <span class="o">=</span> <span class="s1">'[YOUR API KEY]'</span><span class="p">;</span>
+<span class="nv">$userId</span> <span class="o">=</span> <span class="mi">428623</span><span class="p">;</span>
+
+<span class="nv">$userVo</span> <span class="o">=</span> <span class="nx">\Cirrus\Users\UsersCirrus</span><span class="o">::</span><span class="na">init</span><span class="p">()</span>
+  <span class="o">-&gt;</span><span class="na">setClientId</span><span class="p">(</span><span class="nv">$clientId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">setId</span><span class="p">(</span><span class="nv">$userId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">fetchData</span><span class="p">();</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$userVo</span><span class="p">);</span>
+</pre></div>
+
+<p><strong>Expected response:</strong></p>
+
+<div class="highlight"><pre><span class="nx">object</span><span class="p">(</span><span class="nx">Cirrus\Users\UserVo</span><span class="p">)</span><span class="c1">#3 (1) {</span>
+  <span class="p">[</span><span class="s2">"_data"</span><span class="o">:</span><span class="k">protected</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="k">array</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">428623</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"kind"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="s2">"user"</span>
+    <span class="p">[</span><span class="s2">"permalink"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span> <span class="s2">"laps-digitaline"</span>
+    <span class="p">[</span><span class="s2">"username"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span> <span class="s2">"LAPS / DIGITALINE"</span>
+    <span class="p">[</span><span class="s2">"uri"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">38</span><span class="p">)</span> <span class="s2">"http://api.soundcloud.com/users/428623"</span>
+    <span class="p">[</span><span class="s2">"permalink_url"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">37</span><span class="p">)</span> <span class="s2">"http://soundcloud.com/laps-digitaline"</span>
+    <span class="p">[</span><span class="s2">"avatar_url"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">66</span><span class="p">)</span> <span class="s2">"http://i1.sndcdn.com/avatars-000000788968-kgr595-large.jpg?e2f8ae2"</span>
+    <span class="p">[</span><span class="s2">"country"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span> <span class="s2">"Germany"</span>
+    <span class="p">[</span><span class="s2">"full_name"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span> <span class="s2">"Laurent"</span>
+    <span class="p">[</span><span class="s2">"description"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="s2">""</span>
+    <span class="p">[</span><span class="s2">"city"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="s2">"Berlin"</span>
+    <span class="p">[</span><span class="s2">"discogs_name"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span> <span class="s2">"Laps+Digitaline"</span>
+    <span class="p">[</span><span class="s2">"myspace_name"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">14</span><span class="p">)</span> <span class="s2">"lapsdigitaline"</span>
+    <span class="p">[</span><span class="s2">"website"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="k">NULL</span>
+    <span class="p">[</span><span class="s2">"website_title"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="k">NULL</span>
+    <span class="p">[</span><span class="s2">"online"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">bool</span><span class="p">(</span><span class="k">false</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"track_count"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"playlist_count"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"public_favorites_count"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"followers_count"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">845</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"followings_count"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><strong>How to get e.g. a user's full name:</strong></p>
+
+<div class="highlight"><pre><span class="c1">// user's full name</span>
+<span class="k">echo</span> <span class="nv">$userVo</span><span class="o">-&gt;</span><span class="na">getFullName</span><span class="p">();</span>
+
+<span class="c1">// or get all data for this user as an array</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$userVo</span><span class="o">-&gt;</span><span class="na">getData</span><span class="p">());</span>
+</pre></div>
+
+<h3>2. Get user data and its relations</h3>
+
+<p>You can determine which relation data should be fetched as well. Its up to you which data you would like to fetch.
+See below all possible options.</p>
+
+<div class="highlight"><pre><span class="k">require</span> <span class="nx">__DIR__</span> <span class="o">.</span> <span class="s1">'/../vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$clientId</span> <span class="o">=</span> <span class="s1">'[YOUR API KEY]'</span><span class="p">;</span>
+<span class="nv">$userId</span> <span class="o">=</span> <span class="mi">428623</span><span class="p">;</span>
+
+<span class="nv">$userVo</span> <span class="o">=</span> <span class="nx">\Cirrus\Users\UsersCirrus</span><span class="o">::</span><span class="na">init</span><span class="p">()</span>
+  <span class="o">-&gt;</span><span class="na">setClientId</span><span class="p">(</span><span class="nv">$clientId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">setId</span><span class="p">(</span><span class="nv">$userId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">withTracksData</span><span class="p">(</span><span class="k">TRUE</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">withPlaylistsData</span><span class="p">(</span><span class="k">TRUE</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">withFollowersData</span><span class="p">(</span><span class="k">TRUE</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">withFollowingsData</span><span class="p">(</span><span class="k">TRUE</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">withFavoritesData</span><span class="p">(</span><span class="k">TRUE</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">fetchData</span><span class="p">();</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$userVo</span><span class="p">);</span>
+</pre></div>
+
+<h3>3. Get only relationship data from a user</h3>
+
+<p>You could also just get e.g. tracks by a user's id.</p>
+
+<div class="highlight"><pre><span class="k">require</span> <span class="nx">__DIR__</span> <span class="o">.</span> <span class="s1">'/../vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$clientId</span> <span class="o">=</span> <span class="s1">'[YOUR API KEY]'</span><span class="p">;</span>
+<span class="nv">$userId</span> <span class="o">=</span> <span class="mi">428623</span><span class="p">;</span>
+
+<span class="c1">// get tracks by user id</span>
+<span class="nv">$userTracksVoMany</span> <span class="o">=</span> <span class="nx">\Cirrus\Users\UsersCirrus</span><span class="o">::</span><span class="na">init</span><span class="p">()</span>
+  <span class="o">-&gt;</span><span class="na">setClientId</span><span class="p">(</span><span class="nv">$clientId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">setId</span><span class="p">(</span><span class="nv">$userId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">fetchTracksData</span><span class="p">();</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$userTracksVoMany</span><span class="p">);</span>
+
+<span class="c1">// or get all followers</span>
+<span class="nv">$userFollowersVoMany</span> <span class="o">=</span> <span class="nx">\Cirrus\Users\UsersCirrus</span><span class="o">::</span><span class="na">init</span><span class="p">()</span>
+  <span class="o">-&gt;</span><span class="na">setClientId</span><span class="p">(</span><span class="nv">$clientId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">setId</span><span class="p">(</span><span class="nv">$userId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">fetchFollowersData</span><span class="p">();</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$userFollowersVoMany</span><span class="p">);</span>
+</pre></div>
+
+<h1>Example: Track</h1>
+
+<p>Fetching track data is based on the same principles as for the user data.</p>
+
+<h3>1. Get track data</h3>
+
+<div class="highlight"><pre><span class="k">require</span> <span class="nx">__DIR__</span> <span class="o">.</span> <span class="s1">'/../vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$clientId</span> <span class="o">=</span> <span class="s1">'[YOUR API KEY]'</span><span class="p">;</span>
+<span class="nv">$trackId</span> <span class="o">=</span> <span class="mi">64321366</span><span class="p">;</span>
+
+<span class="nv">$trackVo</span> <span class="o">=</span> <span class="nx">\Cirrus\Tracks\TracksCirrus</span><span class="o">::</span><span class="na">init</span><span class="p">()</span>
+  <span class="o">-&gt;</span><span class="na">setClientId</span><span class="p">(</span><span class="nv">$clientId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">setId</span><span class="p">(</span><span class="nv">$trackId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">fetchData</span><span class="p">();</span>
+
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$trackVo</span><span class="p">);</span>
+</pre></div>
+
+<p><strong>Expected response:</strong></p>
+
+<div class="highlight"><pre><span class="nx">object</span><span class="p">(</span><span class="nx">Cirrus\Tracks\TrackVo</span><span class="p">)</span><span class="c1">#3 (1) {</span>
+  <span class="p">[</span><span class="s2">"_data"</span><span class="o">:</span><span class="k">protected</span><span class="p">]</span><span class="o">=&gt;</span>
+  <span class="k">array</span><span class="p">(</span><span class="mi">43</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">[</span><span class="s2">"kind"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="s2">"track"</span>
+    <span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">64321366</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"created_at"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="s2">"2012/10/22 04:02:56 +0000"</span>
+    <span class="p">[</span><span class="s2">"user_id"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">55607</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"duration"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">326090</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"commentable"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">bool</span><span class="p">(</span><span class="k">true</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"state"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="s2">"finished"</span>
+    <span class="p">[</span><span class="s2">"original_content_size"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">86261404</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"sharing"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="s2">"public"</span>
+    <span class="p">[</span><span class="s2">"tag_list"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="s2">""</span>
+    <span class="p">[</span><span class="s2">"permalink"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="s2">"kareemix"</span>
+    <span class="p">[</span><span class="s2">"streamable"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">bool</span><span class="p">(</span><span class="k">true</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"embeddable_by"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="s2">"all"</span>
+    <span class="p">[</span><span class="s2">"downloadable"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">bool</span><span class="p">(</span><span class="k">false</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"purchase_url"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="k">NULL</span>
+    <span class="p">[</span><span class="s2">"label_id"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="k">NULL</span>
+    <span class="p">[</span><span class="s2">"purchase_title"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="k">NULL</span>
+    <span class="p">[</span><span class="s2">"genre"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="s2">""</span>
+    <span class="p">[</span><span class="s2">"title"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="s2">"Kareemix"</span>
+    <span class="p">[</span><span class="s2">"description"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">26</span><span class="p">)</span> <span class="s2">"Remix Kareem &amp; Cem Orlow!!"</span>
+    <span class="p">[</span><span class="s2">"label_name"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="s2">""</span>
+    <span class="p">[</span><span class="s2">"release"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="s2">""</span>
+    <span class="p">[</span><span class="s2">"track_type"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="s2">""</span>
+    <span class="p">[</span><span class="s2">"key_signature"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="s2">""</span>
+    <span class="p">[</span><span class="s2">"isrc"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="s2">""</span>
+    <span class="p">[</span><span class="s2">"video_url"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="k">NULL</span>
+    <span class="p">[</span><span class="s2">"bpm"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="k">NULL</span>
+    <span class="p">[</span><span class="s2">"release_year"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="k">NULL</span>
+    <span class="p">[</span><span class="s2">"release_month"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="k">NULL</span>
+    <span class="p">[</span><span class="s2">"release_day"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="k">NULL</span>
+    <span class="p">[</span><span class="s2">"original_format"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="s2">"wav"</span>
+    <span class="p">[</span><span class="s2">"license"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">19</span><span class="p">)</span> <span class="s2">"all-rights-reserved"</span>
+    <span class="p">[</span><span class="s2">"uri"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">41</span><span class="p">)</span> <span class="s2">"http://api.soundcloud.com/tracks/64321366"</span>
+    <span class="p">[</span><span class="s2">"user"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="k">array</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span> <span class="p">{</span>
+      <span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="o">=&gt;</span>
+      <span class="nx">int</span><span class="p">(</span><span class="mi">55607</span><span class="p">)</span>
+      <span class="p">[</span><span class="s2">"kind"</span><span class="p">]</span><span class="o">=&gt;</span>
+      <span class="nx">string</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="s2">"user"</span>
+      <span class="p">[</span><span class="s2">"permalink"</span><span class="p">]</span><span class="o">=&gt;</span>
+      <span class="nx">string</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span> <span class="s2">"ka_reem"</span>
+      <span class="p">[</span><span class="s2">"username"</span><span class="p">]</span><span class="o">=&gt;</span>
+      <span class="nx">string</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span> <span class="s2">"Kareem (OFFICIAL)"</span>
+      <span class="p">[</span><span class="s2">"uri"</span><span class="p">]</span><span class="o">=&gt;</span>
+      <span class="nx">string</span><span class="p">(</span><span class="mi">37</span><span class="p">)</span> <span class="s2">"http://api.soundcloud.com/users/55607"</span>
+      <span class="p">[</span><span class="s2">"permalink_url"</span><span class="p">]</span><span class="o">=&gt;</span>
+      <span class="nx">string</span><span class="p">(</span><span class="mi">29</span><span class="p">)</span> <span class="s2">"http://soundcloud.com/ka_reem"</span>
+      <span class="p">[</span><span class="s2">"avatar_url"</span><span class="p">]</span><span class="o">=&gt;</span>
+      <span class="nx">string</span><span class="p">(</span><span class="mi">66</span><span class="p">)</span> <span class="s2">"http://i1.sndcdn.com/avatars-000006357671-als3sx-large.jpg?e2f8ae2"</span>
+    <span class="p">}</span>
+    <span class="p">[</span><span class="s2">"permalink_url"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">38</span><span class="p">)</span> <span class="s2">"http://soundcloud.com/ka_reem/kareemix"</span>
+    <span class="p">[</span><span class="s2">"artwork_url"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">67</span><span class="p">)</span> <span class="s2">"http://i1.sndcdn.com/artworks-000032638740-ttuwkl-large.jpg?e2f8ae2"</span>
+    <span class="p">[</span><span class="s2">"waveform_url"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">39</span><span class="p">)</span> <span class="s2">"http://w1.sndcdn.com/Z5M4qTshGRvw_m.png"</span>
+    <span class="p">[</span><span class="s2">"stream_url"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">48</span><span class="p">)</span> <span class="s2">"http://api.soundcloud.com/tracks/64321366/stream"</span>
+    <span class="p">[</span><span class="s2">"playback_count"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">69</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"download_count"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"favoritings_count"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"comment_count"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"attachments_uri"</span><span class="p">]</span><span class="o">=&gt;</span>
+    <span class="nx">string</span><span class="p">(</span><span class="mi">53</span><span class="p">)</span> <span class="s2">"http://api.soundcloud.com/tracks/64321366/attachments"</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>As you might notice the tracks data doesn't come with the complete user data.<br>
+If you want to fetch all user details just fetch them as the following example shows:</p>
+
+<div class="highlight"><pre><span class="nv">$trackVo</span> <span class="o">=</span> <span class="nx">\Cirrus\Tracks\TracksCirrus</span><span class="o">::</span><span class="na">init</span><span class="p">()</span>
+  <span class="o">-&gt;</span><span class="na">setClientId</span><span class="p">(</span><span class="nv">$clientId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">setId</span><span class="p">(</span><span class="nv">$trackId</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">withCompleteUserData</span><span class="p">(</span><span class="k">TRUE</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">fetchData</span><span class="p">();</span>
+</pre></div>
+
+<p>As a result you could now access the complete user details by <code>$trackVo-&gt;getUserVo()</code>.</p>
+
+<h1>Summary of all fetchable data</h1>
+
+<h3>1. User data</h3>
+
+<p><strong>Class:</strong> \Cirrus\Users\UsersCirrus::init()</p>
+
+<p>Fetchable Relationships:</p>
+
+<ul>
+<li>Tracks</li>
+<li>Playlists</li>
+<li>Followers</li>
+<li>Followings</li>
+<li>Favorites</li>
+</ul><h3>2. Track data</h3>
+
+<p><strong>Class:</strong> \Cirrus\Tracks\TracksCirrus::init()</p>
+
+<p>Fetchable Relationships:</p>
+
+<ul>
+<li>Complete user data</li>
+</ul><h3>3. Playlist data</h3>
+
+<p><strong>Class:</strong> \Cirrus\Playlists\PlaylistsCirrus::init()</p>
+
+<p>Fetchable Relationships:</p>
+
+<ul>
+<li>Complete user data</li>
+</ul><h1>Anything else?</h1>
+
+<p>Still in doubt how to use this library? Have a look at the <code>test</code> folder. I included there examples for all fetchable data.</p>
+
+<p>Make sure that you rename the <code>config.php.dist</code> to <code>config.php</code>. And don't forget to put your API Key.</p>
+
+<h1>License</h1>
+
+<p>Cirrus is freely distributable under the terms of the MIT license.</p>
+
+<p>Copyright (c) 2012 Tino Ehrich (<a href="mailto:opensource@efides.com">opensource@efides.com</a>)</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
