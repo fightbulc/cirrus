@@ -319,7 +319,7 @@ $trackVo = \Cirrus\Tracks\TracksCirrus::init()
 
 As a result you could now access the complete user details by ```$trackVo->getUserVo()```.
 
-# Summary of all fetchable data?
+# Summary of all fetchable data
 
 ### 1. User data
 **Class:** \Cirrus\Users\UsersCirrus::init()
