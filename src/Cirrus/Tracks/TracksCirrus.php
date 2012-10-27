@@ -118,6 +118,9 @@
       // array from response
       $trackData = $this->_fetchRemoteData($url);
 
+      // add client id to VO for playable stream url
+      $trackData['_client_id'] = $this->_getClientId();
+
       /** @var $vo TrackVo */
       $vo = $this->_getDataVo($trackData, new TrackVo());
 

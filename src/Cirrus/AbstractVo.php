@@ -55,4 +55,14 @@
     {
       return $this->_data;
     }
+
+    // ##########################################
+
+    /**
+     * @return bool|string
+     */
+    protected function _getClientId()
+    {
+      return $this->_getByKey('_client_id');
+    }
   }

@@ -118,6 +118,9 @@
       // array from response
       $playlistData = $this->_fetchRemoteData($url);
 
+      // for playable track stream url
+      $playlistData['_client_id'] = $this->_getClientId();
+
       /** @var $vo PlaylistVo */
       $vo = $this->_getDataVo($playlistData, new PlaylistVo());
 

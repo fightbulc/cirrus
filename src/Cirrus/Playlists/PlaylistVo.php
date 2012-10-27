@@ -272,6 +272,15 @@
 
       foreach($tracks as $track)
       {
+        // remove dublicate content
+        if(isset($track['user']))
+        {
+          unset($track['user']);
+        }
+
+        // for playable stream url
+        $track['_client_id'] = $this->_getClientId();
+
         $vo = new \Cirrus\Tracks\TrackVo();
         $vo->setData($track);
         $tracksVo[] = $vo;

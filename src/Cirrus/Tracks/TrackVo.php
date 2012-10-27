@@ -242,6 +242,13 @@
 
     // ##########################################
 
+    public function getUrlStreamPlayable()
+    {
+      return $this->_getByKey('stream_url') . '?client_id=' . $this->_getClientId();
+    }
+
+    // ##########################################
+
     public function getUrlDownload()
     {
       return $this->_getByKey('download_url');
