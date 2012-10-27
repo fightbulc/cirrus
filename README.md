@@ -168,25 +168,11 @@ As a result you could now access the complete user details by ```$trackVo->getUs
 ```
 
 **Relationships:**
-- Tracks
-  - ```withTracksData(TRUE)```
-  - or via ```fetchTracksData()```
-
-- Playlists
-  - ```withPlaylistsData(TRUE)```
-  - or via ```fetchPlaylistsData()```
-
-- Followers
-  - ```withFollowersData(TRUE)```
-  - or via ```fetchFollowersData()```
-
-- Followings
-  - ```withFollowingsData(TRUE)```
-  - or via ```fetchFollowingsData()```
-
-- Favorites
-  - ```withFavoritesData(TRUE)```
-  - or via ```fetchFavoritesData()```
+- Tracks: ```withTracksData(TRUE)``` or via ```fetchTracksData()```
+- Playlists: ```withPlaylistsData(TRUE)``` or via ```fetchPlaylistsData()```
+- Followers: ```withFollowersData(TRUE)``` or via ```fetchFollowersData()```
+- Followings: ```withFollowingsData(TRUE)``` or via ```fetchFollowingsData()```
+- Favorites: ```withFavoritesData(TRUE)``` or via ```fetchFavoritesData()```
 
 ### 2. Track data
 **Class:**
@@ -203,8 +189,7 @@ As a result you could now access the complete user details by ```$trackVo->getUs
 ```
 
 **Relationships:**
-- User data
-  - ```withCompleteUserData(TRUE)
+- User data: ```withCompleteUserData(TRUE)```
 
 ### 3. Playlist data
 **Class:**
@@ -221,8 +206,7 @@ As a result you could now access the complete user details by ```$trackVo->getUs
 ```
 
 **Relationships:**
-- User data
-  - ```withCompleteUserData(TRUE)
+- User data: ```withCompleteUserData(TRUE)```
 
 # Artwork & Avatar image sizes
 Soundcloud offers a couple of image sizes for track artwork- and user avatars.
