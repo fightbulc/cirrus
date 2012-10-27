@@ -28,6 +28,7 @@ Cirrus comes as an [composer](http://getcomposer.org/) package. Requirements are
 ### Setup
 - Download
 - Run ```composer install```
+- Get Soundcloud API key
 - Start hacking
 
 # Structure
