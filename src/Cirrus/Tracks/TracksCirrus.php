@@ -10,6 +10,9 @@
     /** @var integer */
     protected $_trackId;
 
+    /** @var array */
+    protected $_trackMultipleIds = array();
+
     /** @var bool */
     protected $_fetchCompleteUserData = FALSE;
 
@@ -72,6 +75,32 @@
     // ##########################################
 
     /**
+     * @param array $trackIds
+     * @return TracksCirrus
+     */
+    public function setMultipleIds(array $trackIds)
+    {
+      $this->_trackMultipleIds = $trackIds;
+
+      // reset single id
+      $this->setId(NULL);
+
+      return $this;
+    }
+
+    // ##########################################
+
+    /**
+     * @return array
+     */
+    protected function _getMultipleIds()
+    {
+      return $this->_trackMultipleIds;
+    }
+
+    // ##########################################
+
+    /**
      * @param bool $use
      * @return TracksCirrus
      */
@@ -95,13 +124,14 @@
     // ##########################################
 
     /**
+     * @param $trackId
      * @return array
      */
-    protected function _getFetchData()
+    protected function _getFetchData($trackId)
     {
       return array(
         'serviceUrl'         => $this->_getServiceUrl(),
-        'trackId'            => $this->_getId(),
+        'trackId'            => $trackId,
         'clientIdUrlPattern' => $this->_getClientIdUrlPattern(),
       );
     }
@@ -109,11 +139,13 @@
     // ##########################################
 
     /**
+     * @param $trackUrlPattern
+     * @param $fetchData
      * @return TrackVo
      */
-    public function fetchData()
+    protected function _fetchData($trackUrlPattern, $fetchData)
     {
-      $url = $this->_parseUrlPattern($this->_getTrackUrlPattern(), $this->_getFetchData());
+      $url = $this->_parseUrlPattern($trackUrlPattern, $fetchData);
 
       // array from response
       $trackData = $this->_fetchRemoteData($url);
@@ -132,6 +164,52 @@
       }
 
       return $vo;
+    }
+
+    // ##########################################
+
+    /**
+     * @return array
+     */
+    protected function _fetchMultipleData()
+    {
+      $voMany = array();
+      $trackIds = $this->_getMultipleIds();
+
+      // make sure that we got some id's
+      if(empty($trackIds))
+      {
+        return FALSE;
+      }
+
+      foreach($trackIds as $trackId)
+      {
+        $urlPattern = $this->_getTrackUrlPattern();
+        $fetchData = $this->_getFetchData($trackId);
+        $voMany[] = $this->_fetchData($urlPattern, $fetchData);
+      }
+
+      return $voMany;
+    }
+
+    // ##########################################
+
+    /**
+     * @return TrackVo
+     */
+    public function fetchData()
+    {
+      // multiple track fetch
+      if(is_null($this->_getId()))
+      {
+        return $this->_fetchMultipleData();
+      }
+
+      // single track fetch
+      $urlPattern = $this->_getTrackUrlPattern();
+      $fetchData = $this->_getFetchData($this->_getId());
+
+      return $this->_fetchData($urlPattern, $fetchData);
     }
 
     // ##########################################
