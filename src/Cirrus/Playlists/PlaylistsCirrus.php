@@ -118,6 +118,12 @@
       // array from response
       $playlistData = $this->_fetchRemoteData($url);
 
+      // handle error
+      if($playlistData === FALSE)
+      {
+        return FALSE;
+      }
+
       // for playable track stream url
       $playlistData['_client_id'] = $this->_getClientId();
 
@@ -128,7 +134,12 @@
       if($this->_getWithCompleteUserData() !== FALSE)
       {
         $userId = $vo->getUserId();
-        $vo->setCompleteUserVo($this->_fetchCompleteUserData($userId));
+        $userData = $this->_fetchCompleteUserData($userId);
+
+        if($userData !== FALSE)
+        {
+          $vo->setCompleteUserVo($userData);
+        }
       }
 
       return $vo;

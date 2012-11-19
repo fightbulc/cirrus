@@ -287,37 +287,68 @@
       // array from response
       $userData = $this->_fetchRemoteData($url);
 
+      // handle error
+      if($userData === FALSE)
+      {
+        return FALSE;
+      }
+
       /** @var $vo UserVo */
       $vo = $this->_getDataVo($userData, new UserVo());
 
       // get tracks data
       if($this->_getWithTracksData() !== FALSE)
       {
-        $vo->setTracksVo($this->fetchTracksData());
+        $tracksData = $this->fetchTracksData();
+
+        if($tracksData !== FALSE)
+        {
+          $vo->setTracksVo($tracksData);
+        }
       }
 
       // get playlists data
       if($this->_getWithPlaylistsData() !== FALSE)
       {
-        $vo->setPlaylistsVo($this->fetchPlaylistsData());
+        $playlistsData = $this->fetchPlaylistsData();
+
+        if($playlistsData !== FALSE)
+        {
+          $vo->setPlaylistsVo($playlistsData);
+        }
       }
 
       // get followers data
       if($this->_getWithFollowersData() !== FALSE)
       {
-        $vo->setFollowersVo($this->fetchFollowersData());
+        $followersData = $this->fetchFollowersData();
+
+        if($followersData !== FALSE)
+        {
+          $vo->setFollowersVo($followersData);
+        }
       }
 
       // get followings data
       if($this->_getWithFollowingsData() !== FALSE)
       {
-        $vo->setFollowingsVo($this->fetchFollowingsData());
+        $followingsData = $this->fetchFollowingsData();
+
+        if($followingsData !== FALSE)
+        {
+          $vo->setFollowingsVo($followingsData);
+        }
       }
 
       // get favorites data
-      if($this->_getWithFollowingsData() !== FALSE)
+      if($this->_getWithFavoritesData() !== FALSE)
       {
-        $vo->setFollowingsVo($this->fetchFollowingsData());
+        $favoritesData = $this->fetchFavoritesData();
+
+        if($favoritesData !== FALSE)
+        {
+          $vo->setFavoritesVo($favoritesData);
+        }
       }
 
       return $vo;
@@ -386,6 +417,12 @@
       // array from response
       $tracksData = $this->_fetchRemoteData($url);
 
+      // handle error
+      if($tracksData === FALSE)
+      {
+        return FALSE;
+      }
+
       // format favorites data to trackVos
       return $this->_parseTracksData($tracksData);
     }
@@ -401,6 +438,12 @@
 
       // array from response
       $playlistsData = $this->_fetchRemoteData($url);
+
+      // handle error
+      if($playlistsData === FALSE)
+      {
+        return FALSE;
+      }
 
       // vo collection
       $playlistsVoMany = array();
@@ -433,6 +476,12 @@
       // array from response
       $followersData = $this->_fetchRemoteData($url);
 
+      // handle error
+      if($followersData === FALSE)
+      {
+        return FALSE;
+      }
+
       // form followers data to userVos
       return $this->_parseUsersData($followersData);
     }
@@ -449,6 +498,12 @@
       // array from response
       $followingsData = $this->_fetchRemoteData($url);
 
+      // handle error
+      if($followingsData === FALSE)
+      {
+        return FALSE;
+      }
+
       // format followings data to userVos
       return $this->_parseUsersData($followingsData);
     }
@@ -464,6 +519,12 @@
 
       // array from response
       $tracksData = $this->_fetchRemoteData($url);
+
+      // handle error
+      if($tracksData === FALSE)
+      {
+        return FALSE;
+      }
 
       // format favorites data to trackVos
       return $this->_parseTracksData($tracksData);

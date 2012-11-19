@@ -150,6 +150,12 @@
       // array from response
       $trackData = $this->_fetchRemoteData($url);
 
+      // handle error
+      if($trackData === FALSE)
+      {
+        return FALSE;
+      }
+
       // add client id to VO for playable stream url
       $trackData['_client_id'] = $this->_getClientId();
 
@@ -160,7 +166,12 @@
       if($this->_getWithCompleteUserData() !== FALSE)
       {
         $userId = $vo->getUserId();
-        $vo->setCompleteUserVo($this->_fetchCompleteUserData($userId));
+        $userData = $this->_fetchCompleteUserData($userId);
+
+        if($userData !== FALSE)
+        {
+          $vo->setCompleteUserVo($userData);
+        }
       }
 
       return $vo;

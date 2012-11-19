@@ -120,7 +120,7 @@
 
     /**
      * @param $url
-     * @return array
+     * @return bool|array
      */
     protected function _fetchRemoteData($url)
     {
@@ -128,7 +128,15 @@
         ->setReturnTransfer(TRUE)
         ->execute();
 
-      return json_decode($jsonResponse, TRUE);
+      $data = json_decode($jsonResponse, TRUE);
+
+      // handle errors
+      if(isset($data['errors']))
+      {
+        return FALSE;
+      }
+
+      return $data;
     }
 
     // ##########################################
