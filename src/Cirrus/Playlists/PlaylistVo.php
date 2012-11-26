@@ -263,29 +263,35 @@
     // ##########################################
 
     /**
-     * @return array
+     * @return array|bool
      */
     public function getTracksVo()
     {
       $tracks = $this->getTracks();
-      $tracksVo = array();
 
-      foreach($tracks as $track)
+      if(! empty($tracks))
       {
-        // remove dublicate content
-        if(isset($track['user']))
+        $tracksVo = array();
+
+        foreach($tracks as $track)
         {
-          unset($track['user']);
+          // remove dublicate content
+          if(isset($track['user']))
+          {
+            unset($track['user']);
+          }
+
+          // for playable stream url
+          $track['_client_id'] = $this->_getClientId();
+
+          $vo = new \Cirrus\Tracks\TrackVo();
+          $vo->setData($track);
+          $tracksVo[] = $vo;
         }
 
-        // for playable stream url
-        $track['_client_id'] = $this->_getClientId();
-
-        $vo = new \Cirrus\Tracks\TrackVo();
-        $vo->setData($track);
-        $tracksVo[] = $vo;
+        return $tracksVo;
       }
 
-      return $tracksVo;
+      return FALSE;
     }
   }
