@@ -14,7 +14,7 @@
         protected $_clientIdUrlPattern = '?client_id={{clientId}}';
 
         /** @var array */
-        protected static $_imageSizes = array(
+        protected static $_imageSizes = [
             'original' => 'original',
             '500'      => 't500x500',
             '400'      => 'crop',
@@ -26,7 +26,7 @@
             '20'       => 'tiny_artworks',
             '18'       => 'tiny_avatars',
             '16'       => 'mini',
-        );
+        ];
 
         // ##########################################
 

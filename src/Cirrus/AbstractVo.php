@@ -5,7 +5,7 @@
     class AbstractVo
     {
         /** @var array */
-        protected $_data = array();
+        protected $_data = [];
 
         // ##########################################
 

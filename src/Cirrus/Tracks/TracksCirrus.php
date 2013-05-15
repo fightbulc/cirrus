@@ -10,11 +10,14 @@
         /** @var string */
         protected $_trackUrlPattern = '{{serviceUrl}}/tracks/{{trackId}}.json{{clientIdUrlPattern}}';
 
+        /** @var string */
+        protected $_trackWithSecretUrlPattern = '{{serviceUrl}}/tracks/{{trackId}}.json{{clientIdUrlPattern}}&secret_token={{trackSecret}}';
+
         /** @var integer */
         protected $_trackId;
 
         /** @var array */
-        protected $_trackMultipleIds = array();
+        protected $_trackMultipleIds = [];
 
         /** @var bool */
         protected $_fetchCompleteUserData = FALSE;
@@ -32,10 +35,17 @@
         // ##########################################
 
         /**
+         * @param $fetchData
+         *
          * @return string
          */
-        protected function _getTrackUrlPattern()
+        protected function _getTrackUrlPattern($fetchData)
         {
+            if (isset($fetchData['trackSecret']))
+            {
+                return $this->_trackWithSecretUrlPattern;
+            }
+
             return $this->_trackUrlPattern;
         }
 
@@ -137,11 +147,22 @@
          */
         protected function _getFetchData($trackId)
         {
-            return array(
+            // set default fields
+            $urlParams = array(
                 'serviceUrl'         => $this->_getServiceUrl(),
                 'trackId'            => $trackId,
                 'clientIdUrlPattern' => $this->_getClientIdUrlPattern(),
             );
+
+            // parse for secret token; pattern = trackId:secretToken
+            if (strpos($trackId, ':') !== FALSE)
+            {
+                $parts = explode(':', $trackId);
+                $urlParams['trackId'] = $parts[0];
+                $urlParams['trackSecret'] = $parts[1];
+            }
+
+            return $urlParams;
         }
 
         // ##########################################
@@ -204,8 +225,8 @@
 
             foreach ($trackIds as $trackId)
             {
-                $urlPattern = $this->_getTrackUrlPattern();
                 $fetchData = $this->_getFetchData($trackId);
+                $urlPattern = $this->_getTrackUrlPattern($fetchData);
                 $voMany[] = $this->_fetchData($urlPattern, $fetchData);
             }
 
@@ -226,8 +247,8 @@
             }
 
             // single track fetch
-            $urlPattern = $this->_getTrackUrlPattern();
             $fetchData = $this->_getFetchData($this->_getId());
+            $urlPattern = $this->_getTrackUrlPattern($fetchData);
 
             return $this->_fetchData($urlPattern, $fetchData);
         }

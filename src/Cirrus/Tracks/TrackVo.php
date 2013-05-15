@@ -3,6 +3,7 @@
     namespace Cirrus\Tracks;
 
     use Cirrus\AbstractVo;
+    use Cirrus\Users\UserVo;
 
     class TrackVo extends AbstractVo
     {
@@ -246,7 +247,18 @@
 
         public function getUrlStreamPlayable()
         {
-            return $this->_getByKey('stream_url') . '?client_id=' . $this->_getClientId();
+            $urlStream = $this->_getByKey('stream_url');
+            $clientIdString = "client_id={$this->_getClientId()}";
+            $connectorChar = '?';
+
+            if (strpos($urlStream, '?') !== FALSE)
+            {
+                $connectorChar = '&';
+            }
+
+            $urlStream = "{$urlStream}{$connectorChar}{$clientIdString}";
+
+            return $urlStream;
         }
 
         // ##########################################
@@ -297,11 +309,11 @@
         // ##########################################
 
         /**
-         * @return \Cirrus\Users\UserVo
+         * @return UserVo
          */
         public function getUserVo()
         {
-            $vo = new \Cirrus\Users\UserVo();
+            $vo = new UserVo();
             $vo->setData($this->getUser());
 
             return $vo;
