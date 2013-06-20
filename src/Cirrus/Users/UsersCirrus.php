@@ -8,6 +8,9 @@
     class UsersCirrus extends Cirrus
     {
         /** @var string */
+        protected $_meUrlPattern = '{{secureServiceUrl}}/me.json{{accessTokenUrlPattern}}';
+
+        /** @var string */
         protected $_userUrlPattern = '{{serviceUrl}}/users/{{userId}}.json{{clientIdUrlPattern}}';
 
         /** @var string */
@@ -26,7 +29,7 @@
         protected $_userFavoritesUrlPattern = '{{serviceUrl}}/users/{{userId}}/favorites.json{{clientIdUrlPattern}}';
 
         /** @var integer */
-        protected $_userId;
+        protected $_userId = NULL;
 
         /** @var bool */
         protected $_fetchTracksData = FALSE;
@@ -55,16 +58,39 @@
 
         // ##########################################
 
-        /**
-         * @param $clientId
-         *
-         * @return \Cirrus\Cirrus|UsersCirrus
-         */
-        public function setClientId($clientId)
-        {
-            parent::setClientId($clientId);
+//        /**
+//         * @param $clientId
+//         *
+//         * @return \Cirrus\Cirrus|UsersCirrus
+//         */
+//        public function setClientId($clientId)
+//        {
+//            parent::setClientId($clientId);
+//
+//            return $this;
+//        }
+//
+//        // ##########################################
+//
+//        /**
+//         * @param $accessToken
+//         * @return $this
+//         */
+//        public function setAccessToken($accessToken)
+//        {
+//            parent::setAccessToken($accessToken);
+//
+//            return $this;
+//        }
 
-            return $this;
+        // ##########################################
+
+        /**
+         * @return string
+         */
+        protected function _getMeUrlPattern()
+        {
+            return $this->_meUrlPattern;
         }
 
         // ##########################################
@@ -288,11 +314,30 @@
         // ##########################################
 
         /**
+         * @return array
+         */
+        protected function _getFetchMeData()
+        {
+            return array(
+                'secureServiceUrl'      => $this->_getSecureServiceUrl(),
+                'accessTokenUrlPattern' => $this->_getAccessTokenUrlPattern(),
+            );
+        }
+
+        // ##########################################
+
+        /**
          * @return UserVo
          */
         public function fetchData()
         {
-            $url = $this->_parseUrlPattern($this->_getUserUrlPattern(), $this->_getFetchData());
+            if ($this->_userId === NULL)
+            {
+                // no userId? Fetch /me.json
+                $url = $this->_parseUrlPattern($this->_getMeUrlPattern(), $this->_getFetchMeData());
+            } else {
+                $url = $this->_parseUrlPattern($this->_getUserUrlPattern(), $this->_getFetchData());
+            }
 
             // array from response
             $userData = $this->_fetchRemoteData($url);
