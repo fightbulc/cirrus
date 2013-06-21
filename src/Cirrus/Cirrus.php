@@ -11,7 +11,13 @@
         protected $_serviceUrl = 'http://api.soundcloud.com';
 
         /** @var string */
+        protected $_secureServiceUrl = 'https://api.soundcloud.com';
+
+        /** @var string */
         protected $_clientIdUrlPattern = '?client_id={{clientId}}';
+
+        /** @var string */
+        protected $_accessTokenUrlPattern = '?oauth_token={{accessToken}}';
 
         /** @var array */
         protected static $_imageSizes = [
@@ -58,6 +64,16 @@
         // ##########################################
 
         /**
+         * @return bool|string
+         */
+        protected function _getSecureServiceUrl()
+        {
+            return $this->_getVarByKey('_secureServiceUrl');
+        }
+
+        // ##########################################
+
+        /**
          * @param $clientId
          *
          * @return Cirrus
@@ -99,6 +115,48 @@
             );
 
             return $this->_parseUrlPattern($this->_clientIdUrlPattern, $data);
+        }
+
+        // ##########################################
+
+        /**
+         * @param $accessToken
+         * @return $this
+         */
+        public function setAccessToken($accessToken)
+        {
+            $this->_accessToken = $accessToken;
+
+            return $this;
+        }
+
+        // ##########################################
+
+        /**
+         * @return string
+         * @throws \Exception
+         */
+        protected function _getAccessToken()
+        {
+            $accessToken = $this->_getVarByKey('_accessToken');
+
+            if (empty($accessToken))
+            {
+                throw new \Exception(__CLASS__ . ': Missing Soundcloud Access Token', 500);
+            }
+
+            return $accessToken;
+        }
+
+        // ##########################################
+
+        protected function _getAccessTokenUrlPattern()
+        {
+            $data = array(
+                'accessToken' => $this->_getAccessToken(),
+            );
+
+            return $this->_parseUrlPattern($this->_accessTokenUrlPattern, $data);
         }
 
         // ##########################################
