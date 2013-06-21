@@ -6,16 +6,16 @@
     // ############################################
 
     $clientId = $config['clientId'];
-    $userId = 428623;
+    $userId = 6455006;
 
     $userVo = \Cirrus\Users\UsersCirrus::init()
         ->setClientId($clientId)
         ->setId($userId)
         ->withTracksData(TRUE)
-        ->withPlaylistsData(TRUE)
-        ->withFollowersData(TRUE)
-        ->withFollowingsData(TRUE)
-        ->withFavoritesData(TRUE)
+//        ->withPlaylistsData(TRUE)
+//        ->withFollowersData(TRUE)
+//        ->withFollowingsData(TRUE)
+//        ->withFavoritesData(TRUE)
         ->fetchData();
 
     // ############################################
