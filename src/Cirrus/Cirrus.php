@@ -89,7 +89,7 @@
 
         /**
          * @return bool|string
-         * @throws \Exception
+         * @throws CirrusException
          */
         protected function _getClientId()
         {
@@ -97,7 +97,7 @@
 
             if (empty($clientId))
             {
-                throw new \Exception(__CLASS__ . ': Missing Soundcloud API-Key (clientId)', 500);
+                throw new CirrusException(__CLASS__ . ': Missing Soundcloud API-Key (clientId)', 500);
             }
 
             return $clientId;
@@ -121,6 +121,7 @@
 
         /**
          * @param $accessToken
+         *
          * @return $this
          */
         public function setAccessToken($accessToken)
@@ -133,8 +134,8 @@
         // ##########################################
 
         /**
-         * @return string
-         * @throws \Exception
+         * @return bool|string
+         * @throws CirrusException
          */
         protected function _getAccessToken()
         {
@@ -142,7 +143,7 @@
 
             if (empty($accessToken))
             {
-                throw new \Exception(__CLASS__ . ': Missing Soundcloud Access Token', 500);
+                throw new CirrusException(__CLASS__ . ': Missing Soundcloud Access Token', 500);
             }
 
             return $accessToken;
@@ -183,7 +184,7 @@
          * @param $url
          *
          * @return mixed
-         * @throws \Exception
+         * @throws CirrusException
          */
         protected function _fetchRemoteData($url)
         {
@@ -196,7 +197,7 @@
             // handle errors
             if (isset($data['errors']))
             {
-                throw new \Exception(__METHOD__ . ": Failed fetching remote data from url={$url}", 500);
+                throw new CirrusException(__CLASS__ . ": Failed fetching remote data from url={$url}", 500);
             }
 
             return $data;
