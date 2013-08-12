@@ -1,7 +1,7 @@
 {
     "name": "fightbulc/cirrus",
     "description": "Soundcloud API Reader Library to fetch data for users, tracks and playlists",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "type": "library",
     "keywords": ["soundcloud", "api", "tracks", "users", "playlists"],
     "license": "MIT",

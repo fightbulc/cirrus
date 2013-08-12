@@ -91,6 +91,7 @@ $userVo = \Cirrus\Users\UsersCirrus::init()
   ->withFollowersData(TRUE)
   ->withFollowingsData(TRUE)
   ->withFavoritesData(TRUE)
+  ->withWebProfilesData(TRUE)
   ->fetchData();
 
 var_dump($userVo);

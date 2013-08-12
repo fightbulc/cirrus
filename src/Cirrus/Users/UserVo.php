@@ -3,6 +3,7 @@
     namespace Cirrus\Users;
 
     use Cirrus\AbstractVo;
+    use Cirrus\Tracks\TrackVo;
 
     class UserVo extends AbstractVo
     {
@@ -163,6 +164,43 @@
 
         // ##########################################
 
+        /**
+         * @return bool|string
+         */
+        public function getTrackGenresUnique()
+        {
+            $unique = [];
+
+            /** @var TrackVo[] $trackVoMany */
+            $trackVoMany = $this->getTracksVo();
+
+            if (empty($trackVoMany))
+            {
+                return FALSE;
+            }
+
+            foreach ($trackVoMany as $trackVo)
+            {
+                $genresFiltered = $trackVo->getGenreFiltered();
+                $pairs = explode(',', $genresFiltered);
+
+                foreach ($pairs as $genre)
+                {
+                    if (!empty($genre) && !in_array($genre, $unique))
+                    {
+                        $unique[] = $genre;
+                    }
+                }
+            }
+
+            // sort
+            sort($unique);
+
+            return join(',', $unique);
+        }
+
+        // ##########################################
+
         public function setPlaylistsVo($playlistsVo)
         {
             $this->_setByKey('playlistsVo', $playlistsVo);
@@ -227,5 +265,22 @@
         public function getFavoritesVo()
         {
             return $this->_getByKey('favoritesVo');
+        }
+
+        // ##########################################
+
+        public function setUserWebProfileVoMany(array $userWebProfileVoMany)
+        {
+            $this->_setByKey('userWebProfileVoMany', $userWebProfileVoMany);
+
+            return $this;
+        }
+
+        // ##########################################
+
+        // list of trackVo
+        public function getUserWebProfileVoMany()
+        {
+            return $this->_getByKey('userWebProfileVoMany');
         }
     }

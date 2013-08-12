@@ -6,18 +6,18 @@
     // ############################################
 
     $clientId = $config['clientId'];
-    $userId = 6455006;
+    $userId = 995847;
 
     $userVo = \Cirrus\Users\UsersCirrus::init()
         ->setClientId($clientId)
         ->setId($userId)
         ->withTracksData(TRUE)
-//        ->withPlaylistsData(TRUE)
-//        ->withFollowersData(TRUE)
-//        ->withFollowingsData(TRUE)
-//        ->withFavoritesData(TRUE)
+        ->withWebProfilesData(TRUE)
         ->fetchData();
 
     // ############################################
 
-    var_dump($userVo);
+//    var_dump($userVo);
+    /** @var \Cirrus\Tracks\TrackVo[] $trackVoMany */
+    var_dump($userVo->getTrackGenresUnique());
+

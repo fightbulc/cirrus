@@ -98,6 +98,28 @@
 
         // ##########################################
 
+        public function getGenreFiltered()
+        {
+            $genresClean = [];
+            $genres = $this->getGenre();
+            $filtered = preg_replace('/[^\w ]+/u', ',', $genres);
+            $pairs = explode(',', $filtered);
+
+            foreach ($pairs as $k => $genre)
+            {
+                $genreTrimmed = trim($genre);
+
+                if (!empty($genreTrimmed))
+                {
+                    $genresClean[] = $genreTrimmed;
+                }
+            }
+
+            return join(',', $genresClean);
+        }
+
+        // ##########################################
+
         public function getRelease()
         {
             return $this->_getByKey('release');

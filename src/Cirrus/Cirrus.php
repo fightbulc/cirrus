@@ -76,7 +76,7 @@
         /**
          * @param $clientId
          *
-         * @return Cirrus
+         * @return static
          */
         public function setClientId($clientId)
         {

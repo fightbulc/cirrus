@@ -28,6 +28,9 @@
         /** @var string */
         protected $_userFavoritesUrlPattern = '{{serviceUrl}}/users/{{userId}}/favorites.json{{clientIdUrlPattern}}';
 
+        /** @var string */
+        protected $_userWebProfilesUrlPattern = '{{serviceUrl}}/users/{{userId}}/web-profiles.json{{clientIdUrlPattern}}';
+
         /** @var integer */
         protected $_userId = NULL;
 
@@ -45,6 +48,9 @@
 
         /** @var bool */
         protected $_fetchFavoritesData = FALSE;
+
+        /** @var bool */
+        protected $_webProfilesData = FALSE;
 
         // ##########################################
 
@@ -151,6 +157,16 @@
         protected function _getUserFavoritesUrlPattern()
         {
             return $this->_userFavoritesUrlPattern;
+        }
+
+        // ##########################################
+
+        /**
+         * @return string
+         */
+        protected function _getUserWebProfilesUrlPattern()
+        {
+            return $this->_userWebProfilesUrlPattern;
         }
 
         // ##########################################
@@ -300,6 +316,30 @@
         // ##########################################
 
         /**
+         * @param bool $use
+         *
+         * @return UsersCirrus
+         */
+        public function withWebProfilesData($use = FALSE)
+        {
+            $this->_fetchWebProfilesData = $use;
+
+            return $this;
+        }
+
+        // ##########################################
+
+        /**
+         * @return bool
+         */
+        protected function _getWithWebProfilesData()
+        {
+            return $this->_fetchWebProfilesData;
+        }
+
+        // ##########################################
+
+        /**
          * @return array
          */
         protected function _getFetchData()
@@ -335,7 +375,9 @@
             {
                 // no userId? Fetch /me.json
                 $url = $this->_parseUrlPattern($this->_getMeUrlPattern(), $this->_getFetchMeData());
-            } else {
+            }
+            else
+            {
                 $url = $this->_parseUrlPattern($this->_getUserUrlPattern(), $this->_getFetchData());
             }
 
@@ -403,6 +445,17 @@
                 if ($favoritesData !== FALSE)
                 {
                     $vo->setFavoritesVo($favoritesData);
+                }
+            }
+
+            // get web profiles data
+            if ($this->_getWithWebProfilesData() !== FALSE)
+            {
+                $userWebProfileVoMany = $this->fetchWebProfilesData();
+
+                if ($userWebProfileVoMany !== FALSE)
+                {
+                    $vo->setUserWebProfileVoMany($userWebProfileVoMany);
                 }
             }
 
@@ -482,6 +535,25 @@
 
             // format favorites data to trackVos
             return $this->_parseTracksData($tracksData);
+        }
+
+        // ##########################################
+
+        /**
+         * @param $webProfilesData
+         *
+         * @return array
+         */
+        protected function _parseWebProfilesData($webProfilesData)
+        {
+            $webProfilesVoMany = [];
+
+            foreach ($webProfilesData as $data)
+            {
+                $webProfilesVoMany[] = new UserWebProfileVo($data);
+            }
+
+            return $webProfilesVoMany;
         }
 
         // ##########################################
@@ -585,5 +657,26 @@
 
             // format favorites data to trackVos
             return $this->_parseTracksData($tracksData);
+        }
+
+        // ##########################################
+
+        /**
+         * @return array
+         */
+        public function fetchWebProfilesData()
+        {
+            $url = $this->_parseUrlPattern($this->_getUserWebProfilesUrlPattern(), $this->_getFetchData());
+
+            // array from response
+            $webProfilesData = $this->_fetchRemoteData($url);
+
+            // handle error
+            if ($webProfilesData === FALSE)
+            {
+                return FALSE;
+            }
+
+            return $this->_parseWebProfilesData($webProfilesData);
         }
     }
