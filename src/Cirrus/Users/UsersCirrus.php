@@ -50,7 +50,7 @@
         protected $_fetchFavoritesData = FALSE;
 
         /** @var bool */
-        protected $_webProfilesData = FALSE;
+        protected $_fetchWebProfilesData = FALSE;
 
         // ##########################################
 
