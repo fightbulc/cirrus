@@ -8,6 +8,9 @@
         protected $_clientId;
 
         /** @var string */
+        protected $_accessToken;
+
+        /** @var string */
         protected $_serviceUrl = 'http://api.soundcloud.com';
 
         /** @var string */
@@ -18,6 +21,9 @@
 
         /** @var string */
         protected $_accessTokenUrlPattern = '?oauth_token={{accessToken}}';
+
+        /** @var string */
+        protected $_resolveUrlPattern = '{{serviceUrl}}/resolve.json{{clientIdUrlPattern}}&url={{url}}';
 
         /** @var array */
         protected static $_imageSizes = [
@@ -163,6 +169,24 @@
         // ##########################################
 
         /**
+         * @param $url
+         *
+         * @return string
+         */
+        protected function _getResolveUrlPattern($url)
+        {
+            $data = array(
+                'serviceUrl'         => $this->_getServiceUrl(),
+                'clientIdUrlPattern' => $this->_getClientIdUrlPattern(),
+                'url'                => $url,
+            );
+
+            return $this->_parseUrlPattern($this->_resolveUrlPattern, $data);
+        }
+
+        // ##########################################
+
+        /**
          * @param $pattern
          * @param $values
          *
@@ -232,5 +256,81 @@
             }
 
             return str_replace('large', Cirrus::$_imageSizes[$size], $imageUrl);
+        }
+
+        // ##########################################
+
+        /**
+         * @param $url
+         *
+         * @return bool|CirrusResolveUrlVo
+         */
+        public function resolveUrl($url)
+        {
+            // build url
+            $url = $this->_getResolveUrlPattern($url);
+
+            // talk to soundcloud
+            $response = $this->_fetchRemoteData($url);
+
+            // handle response
+            if (isset($response['status']) && strpos($response['status'], '302') !== FALSE)
+            {
+                $data = $this->_parseResolveUrlResponse($response['location']);
+
+                if ($data !== FALSE)
+                {
+                    return new CirrusResolveUrlVo($data);
+                }
+            }
+
+            return FALSE;
+        }
+
+        // ######################################
+
+        /**
+         * @param $urlResponse
+         *
+         * @return array|bool
+         */
+        protected function _parseResolveUrlResponse($urlResponse)
+        {
+            $parts = explode('/', $urlResponse);
+            $path = explode('.', $parts[4]);
+
+            $type = NULL;
+            $id = NULL;
+
+            // user
+            if ($parts[3] === 'users' && !empty($path[0]))
+            {
+                $type = 'user';
+                $id = $path[0];
+            }
+
+            // tracks
+            elseif ($parts[3] === 'tracks' && !empty($path[0]))
+            {
+                $type = 'track';
+                $id = $path[0];
+            }
+
+            // playlist
+            elseif ($parts[3] === 'playlists' && !empty($path[0]))
+            {
+                $type = 'playlist';
+                $id = $path[0];
+            }
+
+            if ($type !== NULL)
+            {
+                return [
+                    'type' => $type,
+                    'id'   => $id,
+                ];
+            }
+
+            return FALSE;
         }
     }
