@@ -367,7 +367,7 @@
         // ##########################################
 
         /**
-         * @return UserVo
+         * @return bool|UserVo
          */
         public function fetchData()
         {
@@ -678,5 +678,32 @@
             }
 
             return $this->_parseWebProfilesData($webProfilesData);
+        }
+
+        // ##########################################
+
+        /**
+         * @param $description
+         *
+         * @return bool|UserVo
+         */
+        public function putDescription($description)
+        {
+            $url = $this->_parseUrlPattern($this->_getMeUrlPattern(), $this->_getFetchMeData());
+
+            $vars = [
+                'user[description]' => $description,
+            ];
+
+            // array from response
+            $userData = $this->_putRemoteData($url, $vars);
+
+            // handle error
+            if ($userData === FALSE)
+            {
+                return FALSE;
+            }
+
+            return $this->_getDataVo($userData, new UserVo());
         }
     }

@@ -230,6 +230,34 @@
         // ##########################################
 
         /**
+         * @param $url
+         * @param $vars
+         *
+         * @return mixed
+         * @throws CirrusException
+         */
+        protected function _putRemoteData($url, $vars)
+        {
+            $jsonResponse = \CURL::init($url)
+                ->setReturnTransfer(TRUE)
+                ->setCustomRequest('PUT')
+                ->setPostFields($vars)
+                ->execute();
+
+            $data = json_decode($jsonResponse, TRUE);
+
+            // handle errors
+            if (isset($data['errors']))
+            {
+                throw new CirrusException(__CLASS__ . ": Failed putting reote data at url={$url}", 500);
+            }
+
+            return $data;
+        }
+
+        // ##########################################
+
+        /**
          * @param array $data
          * @param AbstractVo $voClass
          *
